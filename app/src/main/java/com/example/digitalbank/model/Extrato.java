@@ -3,17 +3,17 @@ package com.example.digitalbank.model;
 import com.example.digitalbank.helper.FirebaseHelper;
 import com.google.firebase.database.DatabaseReference;
 
-public class Statement {
+public class Extrato {
 
     private String id;
     private String operation;
     private long date;
-    private double value;
+    private double valor;
     private String type;
 
-    public Statement() {
-        DatabaseReference statementRef = FirebaseHelper.getDatabaseReference();
-        setId(statementRef.push().getKey());
+    public Extrato() {
+        DatabaseReference extratoRef = FirebaseHelper.getDatabaseReference();
+        setId(extratoRef.push().getKey());
     }
 
     public String getId() {
@@ -40,12 +40,12 @@ public class Statement {
         this.date = date;
     }
 
-    public double getValue() {
-        return value;
+    public double getValor() {
+        return valor;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setValor(double valor) {
+        this.valor = valor;
     }
 
     public String getType() {
