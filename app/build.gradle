@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
-    id 'kotlin-parcelize'
 }
 
 android {
@@ -49,4 +48,17 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-storage'
+
+
+    // https://github.com/BlacKCaT27/CurrencyEditText
+    implementation 'com.github.BlacKCaT27:CurrencyEditText:2.0.2'
+
+    // https://github.com/square/picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // https://github.com/santalu/maskara
+    implementation 'com.github.santalu:maskara:1.0.0'
+
+    // https://github.com/tsuryo/Swipeable-RecyclerView
+    implementation 'com.github.tsuryo:Swipeable-RecyclerView:1.1'
 }
