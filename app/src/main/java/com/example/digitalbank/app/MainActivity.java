@@ -12,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.digitalbank.R;
+import com.example.digitalbank.auth.LoginActivity;
+import com.example.digitalbank.recharge.RechargeFormActivity;
+import com.example.digitalbank.transfer.TransferFormActivity;
 import com.example.digitalbank.user.MinhaContaActivity;
 import com.example.digitalbank.deposit.DeposityActivity;
 import com.example.digitalbank.helper.FirebaseHelper;
@@ -90,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void redirecionaUsuario(Class clazz){
+        startActivity(new Intent(this, clazz));
+    }
     private void iniciaComponentes() {
         textSaldo = findViewById(R.id.textSaldo);
         progressBar = findViewById(R.id.progressBar);
@@ -99,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configCliques() {
+        findViewById(R.id.cardTransferir).setOnClickListener(v ->
+                redirecionaUsuario(TransferFormActivity.class));
+        findViewById(R.id.cardDeslogar).setOnClickListener(v ->
+                redirecionaUsuario(LoginActivity.class));
+        findViewById(R.id.cardRecarga).setOnClickListener(v ->
+                redirecionaUsuario(RechargeFormActivity.class));
         imagemPerfil.setOnClickListener(v -> perfilUsuario());
         findViewById(R.id.cardDeposito).setOnClickListener(v -> startActivity(new Intent(this, DeposityActivity.class)));
         findViewById(R.id.cardMinhaConta).setOnClickListener(v -> perfilUsuario());
