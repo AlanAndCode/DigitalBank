@@ -55,7 +55,7 @@ public class RechargeFormActivity extends AppCompatActivity {
         double valor = (double) edtValor.getRawValue() / 100;
         String numero = edtTelefone.getUnMasked();
 
-        if(valor >= 15){
+        if(valor >= 10){
             if(!numero.isEmpty()){
                 if(numero.length() == 11){
                     if(usuario != null){
@@ -78,7 +78,7 @@ public class RechargeFormActivity extends AppCompatActivity {
                 showDialog("Informe o número.");
             }
         }else {
-            showDialog("Recarga mínima de R$ 15,00.");
+            showDialog("Recarga mínima de R$ 10,00.");
         }
 
     }
