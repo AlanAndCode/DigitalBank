@@ -15,6 +15,7 @@ import com.example.digitalbank.R;
 import com.example.digitalbank.helper.FirebaseHelper;
 import com.example.digitalbank.helper.GetMask;
 import com.example.digitalbank.model.Extrato;
+import com.example.digitalbank.model.Notify;
 import com.example.digitalbank.model.Transfer;
 import com.example.digitalbank.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
@@ -68,14 +69,14 @@ public class TransferConfirmActivity extends AppCompatActivity {
         });
     }
 
-    /*private void enviaNotificacao(String idOperacao){
-        Notificacao notificacao = new Notificacao();
+    private void enviaNotificacao(String idOperacao){
+        Notify notificacao = new Notify();
         notificacao.setOperacao("TRANSFERENCIA");
         notificacao.setIdDestinario(usuarioDestino.getId());
         notificacao.setIdEmitente(usuarioOrigem.getId());
         notificacao.setIdOperacao(idOperacao);
         notificacao.enviar();
-    }*/
+    }
 
     public void confirmarTransferencia(View view){
         if(transferencia != null){
@@ -142,7 +143,7 @@ public class TransferConfirmActivity extends AppCompatActivity {
 
                 if(extrato.getType().equals("ENTRADA")){
 
-                    //enviaNotificacao(extrato.getId());
+                    enviaNotificacao(extrato.getId());
 
                     Intent intent = new Intent(this, TransferReceiptActivity.class);
                     intent.putExtra("idTransferencia", transferencia.getId());
