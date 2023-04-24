@@ -1,8 +1,12 @@
 package com.example.digitalbank.model;
 
+import com.example.digitalbank.helper.FirebaseHelper;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
 
     private String id;
     private String nome;
@@ -13,6 +17,14 @@ public class Usuario {
     private String senha;
 
     public Usuario() {
+    }
+
+    public void atualizarSaldo(){
+        DatabaseReference usuarioRef = FirebaseHelper.getDatabaseReference()
+                .child("usuarios")
+                .child(getId())
+                .child("saldo");
+        usuarioRef.setValue(getSaldo());
     }
 
     public String getId() {
@@ -62,7 +74,8 @@ public class Usuario {
     public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
-@Exclude
+
+    @Exclude
     public String getSenha() {
         return senha;
     }
