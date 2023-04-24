@@ -10,9 +10,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.digitalbank.MainActivity;
+import com.example.digitalbank.app.MainActivity;
 import com.example.digitalbank.R;
-import com.example.digitalbank.helper.FireBaseHelper;
+import com.example.digitalbank.helper.FirebaseHelper;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText edtEmail;
@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(this, RegisterActivity.class));
     }
     private void logar(String email, String senha) {
-        FireBaseHelper.getAuth().signInWithEmailAndPassword(
+        FirebaseHelper.getAuth().signInWithEmailAndPassword(
                 email, senha
         ).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
