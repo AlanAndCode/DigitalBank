@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.digitalbank.R;
 import com.example.digitalbank.adapter.ExtratoAdapter;
 import com.example.digitalbank.auth.LoginActivity;
+import com.example.digitalbank.cobranca.CobrarFormActivity;
 import com.example.digitalbank.extrato.ExtratoActivity;
 import com.example.digitalbank.model.Extrato;
 import com.example.digitalbank.model.Notify;
@@ -215,7 +216,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configCliques() {
-
+        findViewById(R.id.cardCobrar).setOnClickListener(v ->
+                redirecionaUsuario(CobrarFormActivity.class)
+        );
         findViewById(R.id.btnNotificacao).setOnClickListener(v ->
                 redirecionaUsuario(NotifyActivity.class)
         );
