@@ -18,6 +18,8 @@ import com.example.digitalbank.adapter.ExtratoAdapter;
 import com.example.digitalbank.auth.LoginActivity;
 import com.example.digitalbank.extrato.ExtratoActivity;
 import com.example.digitalbank.model.Extrato;
+import com.example.digitalbank.model.Notify;
+import com.example.digitalbank.notify.NotifyActivity;
 import com.example.digitalbank.recharge.RechargeFormActivity;
 import com.example.digitalbank.transfer.TransferFormActivity;
 import com.example.digitalbank.user.MinhaContaActivity;
@@ -37,6 +39,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final List<Notify> notifyList = new ArrayList<>();
     private final List<Extrato> extratoListTemp = new ArrayList<>();
     private final List<Extrato> extratoList = new ArrayList<>();
 
@@ -168,6 +171,36 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Ainda estamos recuperando as informações.", Toast.LENGTH_SHORT).show();
         }
     }
+    private void recuperaNotificacoes() {
+        DatabaseReference notificacaoRef = FirebaseHelper.getDatabaseReference()
+                .child("notificacoes")
+                .child(FirebaseHelper.getIdFirebase());
+        notificacaoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                notifyList.clear();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    Notify notificacao = ds.getValue(Notify.class);
+                    notifyList.add(notificacao);
+                }
+
+                if (notifyList.isEmpty()) {
+                    textNotificacao.setText("0");
+                    textNotificacao.setVisibility(View.GONE);
+                } else {
+                    textNotificacao.setText(String.valueOf(notifyList.size()));
+                    textNotificacao.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     private void redirecionaUsuario(Class clazz){
         startActivity(new Intent(this, clazz));
@@ -182,9 +215,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configCliques() {
+
+        findViewById(R.id.btnNotificacao).setOnClickListener(v ->
+                redirecionaUsuario(NotifyActivity.class)
+        );
         findViewById(R.id.cardExtrato).setOnClickListener(v ->
                 redirecionaUsuario(ExtratoActivity.class)
         );
+
         findViewById(R.id.cardTransferir).setOnClickListener(v ->
                 redirecionaUsuario(TransferFormActivity.class));
         findViewById(R.id.cardDeslogar).setOnClickListener(v ->
