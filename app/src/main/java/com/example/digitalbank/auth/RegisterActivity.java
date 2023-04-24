@@ -9,9 +9,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.digitalbank.MainActivity;
+import com.example.digitalbank.app.MainActivity;
 import com.example.digitalbank.R;
-import com.example.digitalbank.helper.FireBaseHelper;
+import com.example.digitalbank.helper.FirebaseHelper;
 import com.example.digitalbank.model.Usuario;
 import com.google.firebase.database.DatabaseReference;
 
@@ -87,7 +87,7 @@ public void validaDados(View view){
 
 
     private void cadastrarUsuario(Usuario usuario) {
-        FireBaseHelper.getAuth().createUserWithEmailAndPassword(
+        FirebaseHelper.getAuth().createUserWithEmailAndPassword(
                 usuario.getEmail(), usuario.getSenha()
         ).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
@@ -105,7 +105,7 @@ public void validaDados(View view){
     }
 
     private void salvarDadosUsuario(Usuario usuario){
-        DatabaseReference usuarioRef = FireBaseHelper.getDatabaseReference()
+        DatabaseReference usuarioRef = FirebaseHelper.getDatabaseReference()
                 .child("usuarios")
                 .child(usuario.getId());
         usuarioRef.setValue(usuario).addOnCompleteListener(task -> {

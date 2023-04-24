@@ -9,8 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.digitalbank.R;
-import com.example.digitalbank.helper.FireBaseHelper;
-import com.example.digitalbank.model.Usuario;
+import com.example.digitalbank.helper.FirebaseHelper;
 
 public class RecoverAccountActivity extends AppCompatActivity {
     private EditText edtEmail;
@@ -41,7 +40,7 @@ public class RecoverAccountActivity extends AppCompatActivity {
     }
 
     private void recuperarConta(String email) {
-        FireBaseHelper.getAuth().sendPasswordResetEmail(
+        FirebaseHelper.getAuth().sendPasswordResetEmail(
                 email
         ).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
