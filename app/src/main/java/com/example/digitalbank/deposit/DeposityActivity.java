@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.blackcat.currencyedittext.CurrencyEditText;
 import com.example.digitalbank.R;
 import com.example.digitalbank.helper.FirebaseHelper;
-import com.example.digitalbank.model.Deposity;
-import com.example.digitalbank.model.Statement;
+import com.example.digitalbank.model.Deposito;
+import com.example.digitalbank.model.Extrato;
 import com.example.digitalbank.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,41 +27,124 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.Locale;
-
 public class DeposityActivity extends AppCompatActivity {
-    private CurrencyEditText edtValor;
+
+    private CurrencyEditText edtValue;
     private AlertDialog dialog;
     private ProgressBar progressBar;
 
-    private Usuario usuario;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+        private Usuario usuario;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deposity);
 
         configToolbar();
+
+        recuperaUsuario();
+
         iniciaComponentes();
-    }
-    public void validaDeposito(View view){
-        double valorDeposito = (double) edtValor.getRawValue() / 100;
+
+        }
+
+public void validaDeposito(View view){
+        double valorDeposito = (double) edtValue.getRawValue() / 100;
 
         if(valorDeposito > 0){
 
-            ocultarTeclado();
+        ocultarTeclado();
 
-            progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
-
+        salvarExtrato(valorDeposito);
 
 
         }else {
-            showDialog("Digite um valor maior que 0.");
+        showDialog("Digite um valor maior que 0.");
         }
 
-    }
-    private void showDialog(String msg){
+        }
+
+        private void salvarExtrato(double valorDeposito){
+
+                Extrato extrato = new Extrato();
+                extrato.setOperation("DEPOSITO");
+                extrato.setValor(valorDeposito);
+                extrato.setType("ENTRADA");
+
+                DatabaseReference extratoRef = FirebaseHelper.getDatabaseReference()
+                        .child("extratos")
+                        .child(FirebaseHelper.getIdFirebase())
+                        .child(extrato.getId());
+                extratoRef.setValue(extrato).addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+
+                                DatabaseReference updateExtrato = extratoRef
+                                        .child("data");
+                                updateExtrato.setValue(ServerValue.TIMESTAMP);
+
+                                salvarDeposito(extrato);
+
+                        }else {
+                                showDialog("Não foi possível efetuar o deposito, tente mais tarde.");
+                        }
+                });
+
+        }
+
+        private void salvarDeposito(Extrato extrato) {
+
+                Deposito deposito = new Deposito();
+                deposito.setId(extrato.getId());
+                deposito.setValor(extrato.getValor());
+
+                DatabaseReference depositoRef = FirebaseHelper.getDatabaseReference()
+                        .child("depositos")
+                        .child(deposito.getId());
+
+                depositoRef.setValue(deposito).addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+
+                                DatabaseReference updateDeposito = depositoRef
+                                        .child("data");
+                                updateDeposito.setValue(ServerValue.TIMESTAMP);
+
+                                usuario.setSaldo(usuario.getSaldo() + deposito.getValor());
+                                usuario.atualizarSaldo();
+
+                                Intent intent = new Intent(this, DepositReceiptActivity.class);
+                                intent.putExtra("idDeposito", deposito.getId());
+                                startActivity(intent);
+                                finish();
+
+                        }else {
+                                progressBar.setVisibility(View.GONE);
+                                showDialog("Não foi possível efetuar o deposito, tente mais tarde.");
+                        }
+                });
+
+        }
+
+        private void recuperaUsuario(){
+                DatabaseReference usuarioRef = FirebaseHelper.getDatabaseReference()
+                        .child("usuarios")
+                        .child(FirebaseHelper.getIdFirebase());
+                usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                usuario = snapshot.getValue(Usuario.class);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                });
+        }
+
+private void showDialog(String msg){
         AlertDialog.Builder builder = new AlertDialog.Builder(
-                this, R.style.CustomAlertDialog
+        this, R.style.CustomAlertDialog
         );
 
         View view = getLayoutInflater().inflate(R.layout.layout_dialog_info, null);
@@ -80,102 +163,27 @@ public class DeposityActivity extends AppCompatActivity {
         dialog = builder.create();
         dialog.show();
 
-    }
+        }
 
-    private void salvarExtrato(double valorDeposito){
-
-        Statement statement = new Statement();
-        statement.setOperation("DEPOSITY");
-        statement.setValue(valorDeposito);
-        statement.setType("ENTER");
-
-        DatabaseReference statementRef = FirebaseHelper.getDatabaseReference()
-                .child("statements")
-                .child(FirebaseHelper.getIdFirebase())
-                .child(statement.getId());
-        statementRef.setValue(statement).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-
-                DatabaseReference updateStatement = statementRef
-                        .child("date");
-                updateStatement.setValue(ServerValue.TIMESTAMP);
-
-                salvarDeposito(statement);
-
-            }else {
-                showDialog("Não foi possível efetuar o deposito, tente mais tarde.");
-            }
-        });
-
-    }
-
-    private void salvarDeposito(Statement statement) {
-
-        Deposity deposity = new Deposity();
-        deposity.setId(deposity.getId());
-        deposity.setValue(deposity.getValue());
-
-        DatabaseReference depositoRef = FirebaseHelper.getDatabaseReference()
-                .child("depositys")
-                .child(deposity.getId());
-
-        depositoRef.setValue(deposity).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-
-                DatabaseReference updateDeposito = depositoRef
-                        .child("date");
-                updateDeposito.setValue(ServerValue.TIMESTAMP);
-
-                usuario.setSaldo(usuario.getSaldo() + deposity.getValue());
-                usuario.updateSaldo();
-
-                Intent intent = new Intent(this, DepositReceiptActivity.class);
-                intent.putExtra("idDeposito", deposity.getId());
-                startActivity(intent);
-                finish();
-
-            }else {
-                progressBar.setVisibility(View.GONE);
-                showDialog("Não foi possível efetuar o deposito, tente mais tarde.");
-            }
-        });
-
-    }
-
-    private void recuperaUsuario(){
-        DatabaseReference usuarioRef = FirebaseHelper.getDatabaseReference()
-                .child("usuarios")
-                .child(FirebaseHelper.getIdFirebase());
-        usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                usuario = snapshot.getValue(Usuario.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-    private void configToolbar(){
+private void configToolbar(){
         TextView textTitulo = findViewById(R.id.textTitulo);
         textTitulo.setText("Depositar");
 
         findViewById(R.id.ibVoltar).setOnClickListener(v -> finish());
-    }
+        }
 
-    private void iniciaComponentes(){
-        edtValor = findViewById(R.id.edtValor);
-        edtValor.setLocale(new Locale("PT", "br"));
+private void iniciaComponentes(){
+        edtValue = findViewById(R.id.edtValor);
+        edtValue.setLocale(new Locale("PT", "br"));
 
         progressBar = findViewById(R.id.progressBar);
-    }
+        }
 
-    private void ocultarTeclado() {
+// Oculta o teclado do dispositivo
+private void ocultarTeclado() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(edtValor.getWindowToken(),
-                InputMethodManager.HIDE_NOT_ALWAYS);
-    }
+        inputMethodManager.hideSoftInputFromWindow(edtValue.getWindowToken(),
+        InputMethodManager.HIDE_NOT_ALWAYS);
+        }
 
-}
+        }
