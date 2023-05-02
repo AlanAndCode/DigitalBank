@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         recuperaExtrato();
 
-        //recuperaNotificacoes();
+        recuperaNotificacoes();
 
     }
     private void configDados() {
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void recuperaNotificacoes() {
         DatabaseReference notificacaoRef = FirebaseHelper.getDatabaseReference()
-                .child("notificacoes")
+                .child("notify")
                 .child(FirebaseHelper.getIdFirebase());
         notificacaoRef.addValueEventListener(new ValueEventListener() {
             @Override
