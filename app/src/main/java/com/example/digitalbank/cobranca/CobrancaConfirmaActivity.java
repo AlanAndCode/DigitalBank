@@ -53,24 +53,24 @@ public class CobrancaConfirmaActivity extends AppCompatActivity {
                 .child(cobranca.getIdDestinatario())
                 .child(cobranca.getId());
         cobrancaRef.setValue(cobranca).addOnCompleteListener(task -> {
-           if(task.isSuccessful()){
+            if(task.isSuccessful()){
 
-               progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
 
-               DatabaseReference updateRef = cobrancaRef
-                       .child("data");
-               updateRef.setValue(ServerValue.TIMESTAMP);
+                DatabaseReference updateRef = cobrancaRef
+                        .child("data");
+                updateRef.setValue(ServerValue.TIMESTAMP);
 
-               // Configura a notificação
-               configNotificacao();
+                // Configura a notificação
+                configNotificacao();
 
-           }else {
-               showDialog();
-           }
+            }else {
+                showDialog();
+            }
         });
     }
 
-
+    // Configura a notificação
     private void configNotificacao(){
         Notify notificacao = new Notify();
         notificacao.setIdOperacao(cobranca.getId());
@@ -84,28 +84,28 @@ public class CobrancaConfirmaActivity extends AppCompatActivity {
     }
 
     // Envia a notificação para o usuário que irá receber a cobrança
-   private void enviarNotificacao(Notify notificacao){
+    private void enviarNotificacao(Notify notificacao){
         DatabaseReference noficacaoRef = FirebaseHelper.getDatabaseReference()
                 .child("notificacoes")
                 .child(notificacao.getIdDestinario())
                 .child(notificacao.getId());
         noficacaoRef.setValue(notificacao).addOnCompleteListener(task -> {
-           if(task.isSuccessful()){
+            if(task.isSuccessful()){
 
-               DatabaseReference updateRef = noficacaoRef
-                       .child("data");
-               updateRef.setValue(ServerValue.TIMESTAMP);
+                DatabaseReference updateRef = noficacaoRef
+                        .child("data");
+                updateRef.setValue(ServerValue.TIMESTAMP);
 
-               Toast.makeText(this, "Cobrança enviada com sucesso!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cobrança enviada com sucesso!", Toast.LENGTH_SHORT).show();
 
-               Intent intent = new Intent(this, MainActivity.class);
-               intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-               startActivity(intent);
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
 
             }else {
-               progressBar.setVisibility(View.GONE);
-               showDialog();
-           }
+                progressBar.setVisibility(View.GONE);
+                showDialog();
+            }
         });
     }
 
