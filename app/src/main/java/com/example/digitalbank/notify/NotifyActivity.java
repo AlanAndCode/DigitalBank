@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.digitalbank.R;
 import com.example.digitalbank.adapter.NotifyAdapter;
+import com.example.digitalbank.cobranca.PagarCobrancaFormActivity;
 import com.example.digitalbank.helper.FirebaseHelper;
 import com.example.digitalbank.model.Notify;
 import com.example.digitalbank.transfer.TransferReceiptActivity;
@@ -140,7 +141,7 @@ public class NotifyActivity extends AppCompatActivity implements NotifyAdapter.O
 
     private void removerNotificacoes(Notify notificacao){
         DatabaseReference notificacaoRef = FirebaseHelper.getDatabaseReference()
-                .child("notificacoes")
+                .child("notify")
                 .child(FirebaseHelper.getIdFirebase())
                 .child(notificacao.getId());
         notificacaoRef.removeValue().addOnCompleteListener(task -> {
@@ -210,9 +211,9 @@ public class NotifyActivity extends AppCompatActivity implements NotifyAdapter.O
     @Override
     public void OnClickListener(Notify notificacao) {
         if(notificacao.getOperacao().equals("COBRANCA")){
-           /* Intent intent = new Intent(this, PagarCobrancaActivity.class);
-            intent.putExtra("notificacao", notificacao);
-            startActivity(intent); */
+            Intent intent = new Intent(this, PagarCobrancaFormActivity.class);
+            intent.putExtra("notify", notificacao);
+            startActivity(intent);
         }else if(notificacao.getOperacao().equals("TRANSFERENCIA")){
             Intent intent = new Intent(this, TransferReceiptActivity.class);
             intent.putExtra("idTransferencia", notificacao.getIdOperacao());
