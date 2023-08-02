@@ -9,4 +9,4 @@ More information about PICASSO:
 * [Picasso](https://github.com/square/picasso)
 
 
-<img width="300" alt="SwipeableRecyclerView" src="https://github.com/AlanAndCode/DigitalBank/tree/master/app/src/main/res/drawable/app.jpg"> 
+<img width="300" alt="SwipeableRecyclerView"> src="https://github.com/AlanAndCode/DigitalBank/tree/master/app/src/main/res/drawable/app.jpg"> 
